@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIR STUDIO v2.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Press+Start+2P&family=VT323&family=Silkscreen&family=Share+Tech+Mono&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Cutive+Mono&family=Bebas+Neue&family=Oswald:wght@700&family=Archivo+Black&family=Permanent+Marker&family=Boogaloo&family=Fredoka+One&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════
+       TOP BAR — Global Actions
+  ═══════════════════════════════════════ -->
+  <header id="topbar">
+    <div id="brand">
+      <span class="brand-bracket">[</span>
+      BRUTAL
+      <span class="brand-accent">STUDIO</span>
+      <span class="brand-version">v2.0</span>
+      <span class="brand-bracket">]</span>
+    </div>
+
+    <nav id="topbar-actions">
+      <button class="top-btn" id="btn-new-page" title="Add a new page">
+        + PAGE
+      </button>
+      <button class="top-btn" id="btn-clear-page" title="Clear current page">
+        CLR PAGE
+      </button>
+      <div class="top-divider"></div>
+      <button class="top-btn" id="btn-save" title="Save canvas as PNG">
+        ⬇ SAVE
+      </button>
+      <button class="top-btn danger" id="btn-nuke" title="Delete all pages">
+        ☢ NUKE ALL
+      </button>
+    </nav>
+
+    <div id="topbar-status">
+      <span id="status-tool">TOOL: PEN</span>
+      <span id="status-page">PAGE: 1/1</span>
+      <span id="status-coords">X:0 Y:0</span>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════
+       LEFT SIDEBAR — Tool Selection
+  ═══════════════════════════════════════ -->
+  <aside id="sidebar">
+    <div class="sidebar-label">TOOLS</div>
+
+    <button class="tool-btn active" data-tool="pen" title="Pen / Brush [P]">
+      <span class="tool-icon">✏</span>
+      <span class="tool-name">PEN</span>
+    </button>
+
+    <button class="tool-btn" data-tool="write" title="Write Text [T]">
+      <span class="tool-icon">Aa</span>
+      <span class="tool-name">WRITE</span>
+    </button>
+
+    <button class="tool-btn" data-tool="select" title="Select Area [S]">
+      <span class="tool-icon">⬚</span>
+      <span class="tool-name">SELECT</span>
+    </button>
+
+    <button class="tool-btn" data-tool="rect" title="Rectangle [R]">
+      <span class="tool-icon">▭</span>
+      <span class="tool-name">RECT</span>
+    </button>
+
+    <button class="tool-btn" data-tool="circle" title="Circle [C]">
+      <span class="tool-icon">◯</span>
+      <span class="tool-name">CIRCLE</span>
+    </button>
+
+    <button class="tool-btn" data-tool="eraser" title="Eraser [E]">
+      <span class="tool-icon">⌫</span>
+      <span class="tool-name">ERASE</span>
+    </button>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">COLOR</div>
+
+    <!-- Quick color swatches -->
+    <div id="quick-swatches">
+      <div class="swatch active" data-color="#000000" style="background:#000000;" title="Black"></div>
+      <div class="swatch" data-color="#FF00FF" style="background:#FF00FF;" title="Magenta"></div>
+      <div class="swatch" data-color="#00FFFF" style="background:#00FFFF;" title="Cyan"></div>
+      <div class="swatch" data-color="#FF0000" style="background:#FF0000;" title="Red"></div>
+      <div class="swatch" data-color="#FFFF00" style="background:#FFFF00;" title="Yellow"></div>
+      <div class="swatch" data-color="#ffffff" style="background:#ffffff; border: 3px solid #000;" title="White"></div>
+    </div>
+
+    <input type="color" id="color-picker-sidebar" value="#000000" title="Custom Color" />
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-label">SIZE</div>
+
+    <div id="size-display"><span id="size-value">4</span>px</div>
+    <input type="range" id="size-slider-sidebar" min="1" max="80" value="4" class="brutal-slider" />
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════
+       MAIN WORKSPACE — Canvas Stack
+  ═══════════════════════════════════════ -->
+  <main id="workspace">
+    <div id="canvas-stack">
+      <!-- Pages are injected here by JS -->
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════
+       GHOST TEXTAREA — Text Tool Overlay
+  ═══════════════════════════════════════ -->
+  <textarea
+    id="ghost-input"
+    spellcheck="false"
+    autocomplete="off"
+    placeholder="TYPE HERE..."
+  ></textarea>
+
+  <!-- ═══════════════════════════════════════
+       FLOATING POPUP — Contextual Controls
+  ═══════════════════════════════════════ -->
+  <div id="floating-popup" class="hidden">
+
+    <!-- Tab: PEN / WRITE / SHAPES controls -->
+    <div class="popup-section" id="popup-brush">
+      <div class="popup-label">BRUSH SIZE</div>
+      <div class="popup-row">
+        <input type="range" id="popup-size" min="1" max="80" value="4" class="brutal-slider" />
+        <span id="popup-size-val">4</span>px
+      </div>
+    </div>
+
+    <div class="popup-section" id="popup-color-section">
+      <div class="popup-label">COLOR</div>
+      <div id="popup-palette">
+        <div class="swatch" data-color="#000000" style="background:#000000;"></div>
+        <div class="swatch" data-color="#FF00FF" style="background:#FF00FF;"></div>
+        <div class="swatch" data-color="#00FFFF" style="background:#00FFFF;"></div>
+        <div class="swatch" data-color="#FF0000" style="background:#FF0000;"></div>
+        <div class="swatch" data-color="#FFFF00" style="background:#FFFF00;"></div>
+        <div class="swatch" data-color="#00FF00" style="background:#00FF00;"></div>
+        <div class="swatch" data-color="#0000FF" style="background:#0000FF;"></div>
+        <div class="swatch" data-color="#ffffff" style="background:#ffffff; border:3px solid #000;"></div>
+      </div>
+      <input type="color" id="popup-color-picker" value="#000000" />
+    </div>
+
+    <!-- Tab: FONT selection (write tool) -->
+    <div class="popup-section" id="popup-fonts">
+      <div class="popup-label">FONT</div>
+      <div id="font-grid">
+        <button class="font-btn active" data-font="Space Mono">Space Mono</button>
+        <button class="font-btn" data-font="Press Start 2P">Pixel</button>
+        <button class="font-btn" data-font="VT323">VT323</button>
+        <button class="font-btn" data-font="Silkscreen">Silkscreen</button>
+        <button class="font-btn" data-font="Share Tech Mono">ShareTech</button>
+        <button class="font-btn" data-font="Courier Prime">Courier</button>
+        <button class="font-btn" data-font="Special Elite">S.Elite</button>
+        <button class="font-btn" data-font="Cutive Mono">Cutive</button>
+        <button class="font-btn" data-font="Bebas Neue">BEBAS</button>
+        <button class="font-btn" data-font="Oswald">Oswald</button>
+        <button class="font-btn" data-font="Archivo Black">Archivo</button>
+        <button class="font-btn" data-font="Permanent Marker">Marker</button>
+        <button class="font-btn" data-font="Fredoka One">Fredoka</button>
+      </div>
+      <div class="popup-row">
+        <span class="popup-label">TEXT SIZE</span>
+        <input type="range" id="popup-font-size" min="8" max="128" value="24" class="brutal-slider" />
+        <span id="popup-font-size-val">24</span>px
+      </div>
+    </div>
+
+    <!-- Tab: SELECT actions -->
+    <div class="popup-section hidden" id="popup-select-actions">
+      <div class="popup-label">SELECTION</div>
+      <button class="pop-action-btn" id="sel-fill-btn">■ FILL</button>
+      <button class="pop-action-btn" id="sel-delete-btn">✕ DELETE</button>
+      <input type="color" id="sel-fill-color" value="#FF00FF" title="Fill color" />
+    </div>
+
+    <button id="popup-close">✕ CLOSE</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       KEYBOARD SHORTCUT HINT
+  ═══════════════════════════════════════ -->
+  <div id="shortcut-hint">
+    P·PEN &nbsp;|&nbsp; T·TEXT &nbsp;|&nbsp; S·SELECT &nbsp;|&nbsp; R·RECT &nbsp;|&nbsp; C·CIRCLE &nbsp;|&nbsp; E·ERASE
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
